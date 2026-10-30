@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: intellihome-iamhome-agent_web_1
+      APP_PORT: 8766
+
+  web:
+    image: ghcr.io/richiinfoset/iamhome-agent:1.1.9@sha256:2bb56d05727295bd9037155263c8db46e70f0b1352dea96709f8327d0590a385
+    restart: on-failure
+    stop_grace_period: 30s
+    user: "1000:1000"
+    ports:
+      - "8765:8765"
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    environment:
+      UMBREL_APP: "1"
+      STATE_FILE: /data/state.json
+      TZ: Europe/Prague
+      DEVICE_HOSTNAME: ${DEVICE_HOSTNAME}
+    mem_limit: 384m
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
