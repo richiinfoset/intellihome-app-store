@@ -7,7 +7,7 @@ services:
       APP_PORT: 8766
 
   web:
-    image: ghcr.io/richiinfoset/iamhome-agent:2.1.8@sha256:67b1cc6c1543d206c29dde126fe481aba416b7e8f189d6b46d053d443cd10527
+    image: ghcr.io/richiinfoset/iamhome-agent:2.1.9@sha256:738960bd647f2a4aaded50fa94bd8a45de4ded0c68137ea9697a64f17e5352c3
     restart: on-failure
     stop_grace_period: 30s
     user: "1000:1000"
@@ -20,6 +20,7 @@ services:
       STATE_FILE: /data/state.json
       TZ: Europe/Prague
       DEVICE_HOSTNAME: ${DEVICE_HOSTNAME}
+      APP_SEED: ${APP_SEED}
     mem_limit: 384m
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
