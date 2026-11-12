@@ -7,7 +7,7 @@ services:
       APP_PORT: 8766
 
   web:
-    image: ghcr.io/richiinfoset/iamhome-agent:2.2.5@sha256:088ffb1a1372130a7dac2e9b4c37d799305f9462d73f9ff7789eec5b1ea869c9
+    image: ghcr.io/richiinfoset/iamhome-agent:2.2.6@sha256:8f24c963a93b699158603a1e8732bf70a54c64c083799732d7d4920817f4ec9b
     restart: on-failure
     stop_grace_period: 30s
     user: "1000:1000"
