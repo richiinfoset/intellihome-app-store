@@ -1,0 +1,582 @@
+IamHome Agent: historie verzí
+=============================
+Co přinesla každá verze, od nejnovější. Vyžaduje umbrelOS 2.0 nebo novější.
+(Vygenerováno z CHANGELOG.md příkazem node tools/changelog-txt.mjs.)
+
+2.3.0 (13. 11. 2026)
+--------------------
+- Tab Znalosti nahoře vedle Přehledu: celá znalostní báze ke čtení, i ve verzi
+  zdarma. Postupy Chci…, Když něco nejde, články k aplikacím, které máš
+  nainstalované, a 25 článků z wiki Intellihome (Home Assistant, Node-RED,
+  Homebridge, Docker, MQTT, Zigbee, Thread, Matter, UniFi…, stejné jako na
+  intellihome.cz/znalosti), s hledáním, česky i anglicky. S licencí Proveď mě
+  s agentem / Zeptej se agenta. Agent wiki zná taky a na články v odpovědi
+  odkazuje.
+- Jak na to: problémy na Domově, nálezy ranního reportu (v mailu i v Přehledu
+  → Reporty) a doporučení mají odkaz na odpovídající článek ve Znalostech
+  (plný disk, horký server, appka nejde, zálohy, chyby v logu, Home
+  Assistant).
+
+2.2.9 (13. 11. 2026)
+--------------------
+- Bezpečnostní aktualizace knihoven: hono 4.13.18 a @hono/node-server 2.1.8
+  (přichází s MCP SDK), opravují zranitelnosti hlášené 13. 11.
+
+2.2.8 (13. 11. 2026)
+--------------------
+- Známé chyby. U chyby v logu (Přehled → Logy, karta aplikace, Home Assistant)
+  je tlačítko vím o ní, volitelně s datem „platí do“ (heslo k nevratným
+  akcím). Taková chyba, třeba vypnuté topení, které Node-RED pořád hledá, se
+  přestane počítat do ranního reportu a nárůstu chyb. Hlídaná zůstane: když jí
+  bude 10× víc než obvykle, report to ohlásí. Nové chyby se hlásí dál. Seznam
+  a zrušení dole v Přehledu → Logy. Agent v chatu je bere jako známé a
+  nevydává je za problém.
+- „Vím o tom“ i u zařízení Home Assistantu a aplikací. Zařízení, které záměrně
+  nejde (topení v létě), se po označení na kartě Home Assistant nepočítá do
+  nefunkčních, na Domov ani do reportu; až zase začne fungovat, report to
+  jednou zmíní. Aplikace, kterou spouštíš jen občas, jde označit přímo v
+  Přehledu → Aplikace (dřív jen v Nastavení), její zastavení se pak nehlásí.
+- Konec platnosti „vím o tom“ připomene ranní report 3 dny předem a den po
+  skončení.
+- Návrhy: chybu, která se 14 dní opakuje ve stejném počtu a appka přitom
+  nepadá, appka sama nabídne („Víš o ní?“) na Domově, v Přehledu → Logy a
+  jednou v ranním reportu. Zařízení Home Assistantu, které nejde přes týden,
+  taky.
+- Agent v chatu umí „vím o tom“ uložit sám, když mu to řekneš („tyhle chyby
+  ber jako známé do března“); uložení potvrdíš heslem.
+- Ignorované chyby (Nastavení → Monitoring) Přehled → Logy ukáže i s tím, co
+  za 7 dní schovaly, a jedním tlačítkem je převede na známé chyby, u kterých
+  se hlídá nárůst.
+
+2.2.7 (13. 11. 2026)
+--------------------
+- Hlídání zálohy aktuálně. Složka se zálohami se kontroluje při každé kontrole
+  (každých 15 minut), dřív jen jednou za 6 hodin, takže agent i Domov
+  ukazovaly i několik hodin starou zálohu (u přírůstkové zálohy umbrelOS
+  každou hodinu hlásil agent ve 3 odpoledne „poslední v 10:17“). Velké složky
+  (repozitář zálohy umbrelOS má tisíce souborů) se procházejí od nejnověji
+  změněných podsložek, takže se nejnovější záloha najde i v nich. Domov a
+  rychlá odpověď píšou, kdy se složka kontrolovala.
+- Agent u údajů z monitoringu uvádí čas kontroly („podle kontroly ve 14:30“) a
+  netvrdí, že jde o aktuální stav. Když je údaj starý, ověří ho živě (u zálohy
+  projde složku sám).
+
+2.2.6 (12. 11. 2026)
+--------------------
+- Restarty a aktualizace aplikací. Restart, spuštění, zastavení a aktualizace
+  aplikace se čtou z logu Umbrelu (i když trvaly jen pár sekund, což
+  15minutová kontrola nevidí) a appka ví, kdo je udělal: úloha IamHome, agent
+  v chatu, ručně v Umbrelu nebo automatická aktualizace. Jsou na kartě
+  aplikace, ty mimo IamHome i ve Výpadcích a v „Co se dělo v noci?“. „Bez
+  výpadku od“ začíná od posledního restartu. Po aktualizaci se doplní i z
+  uložených logů za posledních 7 dní.
+- Agent na otázku „restartovala se appka…?“ odpovídá z těchto událostí (dřív
+  odpověděl „ne“, když restart udělala úloha IamHome mezi dvěma kontrolami).
+  Než odpoví „nebylo / nenašel jsem“, napíše, co prohledal. Ke čtení logu
+  aplikace dostane známé hlášky té aplikace ze znalostní báze (zatím
+  Homebridge: hlášky avahi „Server startup complete … umbrel-N.local“ nejsou
+  restart).
+- Nová rychlá odpověď „Proběhly naplánované úlohy?“ (bez AI, zdarma): pro
+  každou zapnutou úlohu termíny za posledních 24 hodin a jestli proběhly, s
+  chybou, nebo vůbec (u zameškaného termínu i to, že IamHome v tu dobu
+  neběžel).
+
+2.2.5 (10. 11. 2026)
+--------------------
+- Domov → Aplikace: stav běhu je na řádku pod názvem aplikace, dlouhé názvy se
+  už nezalamují.
+
+2.2.4 (9. 11. 2026)
+-------------------
+- Restart serveru bez falešných poplachů. Prvních 15 minut po startu serveru
+  se aplikace, které se teprve rozjíždějí, nehlásí jako výpadek (dřív po
+  každém restartu přišlo „⚠️ problém“ a za čtvrt hodiny „✅ obnoveno“). V
+  Přehledu jsou vidět jako „spouští se po startu serveru“, na Domově je
+  informace. Když appka nenaběhne ani po 15 minutách, upozornění přijde.
+- Home Assistant po restartu. HA po restartu nastaví všem entitám čas poslední
+  změny na start, takže zařízení nefunkční měsíce vypadala jako nová porucha.
+  Appka si teď pamatuje, od kdy zařízení nejde; u zařízení, které poprvé uvidí
+  až po restartu HA, napíše „od startu HA, možná déle“.
+- Ranní report: kamera v režimu „jen při pohybu“ se už nehlásí jako
+  „nenahrává“. Spadlá appka a její web se počítají jako jedna věc (dřív pád
+  dvou appek vypadal jako „současný výpadek 4 služeb“).
+- Ověření po aktualizaci a po akci úlohy kontroluje, že kontejner appky
+  opravdu běží (Umbrel hlásí „ready“ i u spadlého kontejneru).
+- Měsíční vysvědčení rozlišuje, kdy neběžel server (podle zjištěného restartu)
+  a kdy jen monitoring (aktualizace appky, výpadek Umbrel MCP). Dny se zálohou
+  se počítají v místním čase.
+- Grafy v Přehledu přeruší čáru tam, kde nejsou data (server nebo monitoring
+  neběžel). Rychlé odpovědi upozorní, když je poslední měření staré, a u testu
+  rychlosti internetu píšou, kdy proběhl. Předpověď úniku paměti začíná až po
+  posledním restartu appky nebo serveru.
+
+2.2.3 (9. 11. 2026)
+-------------------
+- Spadlý kontejner. Umbrel u aplikace hlásí „běží“, i když její kontejner
+  spadl. Appka to teď pozná (aplikace nemá žádnou paměť) a hlásí to jako
+  výpadek „kontejner neběží“: mail, Domov, ranní report a automatický restart.
+- Restart serveru. Restart umbrelOS se zapíše do Výpadků, do rychlých odpovědí
+  (noc, týden) a do ranního reportu. U aplikací se místo zavádějícího „běží ·
+  20 dní“ píše „bez výpadku X“, nejdřív od startu serveru.
+- Doba běhu serveru v Přehledu se počítá od startu (dřív hodnota z poslední
+  kontroly), pod hodinu v minutách; „2 dny“ místo „2 dní“.
+
+2.2.2 (9. 11. 2026)
+-------------------
+- Zapomenuté heslo k nevratným akcím. U každého pole s tímto heslem (odemčení
+  Nastavení, potvrzení akce, úlohy, aktualizace) je odkaz „Zapomenuté heslo?“.
+  Druhým kliknutím tě odhlásí a otevře obnovu hesla s předvybranou změnou
+  hesla k nevratným akcím (kód z logu appky).
+- Přehlednější ranní report. Mail má barevné záhlaví podle stavu, dlaždice
+  disk / RAM / CPU / teplota s ukazatelem, nálezy jako barevné karty, AI
+  rozbor s nadpisy a odrážkami a stav serveru v tabulce. Textová verze mailu
+  zůstává.
+
+2.2.1 (8. 11. 2026)
+-------------------
+- Přísnější blokace hádání. Po 10 chybných pokusech z jedné adresy během
+  hodiny (přihlašovací heslo, token API, kód průvodce, párování, zapomenuté
+  heslo) se adresa zablokuje na hodinu (dřív 20 pokusů a 10 minut).
+- Totéž u hesla k nevratným akcím a hesla zálohy: po 10 špatných heslech k
+  akcím, resp. 5 špatných heslech zálohy během hodiny blokace na hodinu (dřív
+  10 minut).
+
+2.2.0 (8. 11. 2026)
+-------------------
+- Tajemství se neukládají ani v historii. Tokeny a hesla z nastavení i
+  rozpoznatelné klíče (Claude, OpenAI, GitHub, tokeny HA) se maskují v
+  uložených konverzacích (včetně názvu), v historii akcí, v poznámkách a v
+  náhledech mailů. Platí i pro token, který vložíš do zprávy agentovi.
+
+2.1.9 (8. 11. 2026)
+-------------------
+- Silnější heslo zálohy. Nová záloha chce heslo aspoň 12 znaků a 3 ze 4 druhů
+  (velká písmena, malá písmena, číslice, speciální znaky), u pole je tlačítko
+  vygenerovat a upozornění, ať si heslo uložíš. Starší zálohy jdou obnovit
+  dál.
+- Hesla appky se neukládají čitelně. Přihlašovací heslo a heslo k nevratným
+  akcím jsou v nastavení (config.json) jen jako otisk (scrypt). Při prvním
+  startu nové verze se převedou samy, zařízení se jednou odhlásí.
+- Tajná nastavení šifrovaně. Tokeny a hesla cizích služeb (MCP, AI klíč, mail,
+  Home Assistant, Node-RED, UniFi…) jsou v config.json šifrované klíčem z
+  Umbrelu (APP_SEED), takže je nepřečte nikdo, kdo má jen přístup ke složce
+  dat (např. jiný AI agent přes Umbrel MCP). Záloha je nese dál a obnova
+  funguje i na jiném zařízení.
+- Klíče HTTPS šifrovaně. Soukromé klíče vlastní certifikační autority a
+  serveru (data/tls) jsou zašifrované stejným klíčem. Na jiném zařízení appka
+  vytvoří novou certifikační autoritu.
+
+2.1.8 (8. 11. 2026)
+-------------------
+- Jeden MCP token v Nastavení. Pole se jmenuje jen „Umbrel MCP token“
+  (monitoring i chat). Samostatný token pro chat je volitelný a schovaný pod
+  „+ Samostatný token pro chat (volitelné)“, protože Umbrel zatím dává všem
+  tokenům stejná oprávnění. Kdo ho má vyplněný, vidí ho dál.
+
+2.1.7 (8. 11. 2026)
+-------------------
+- Úloha s AI chce heslo. Uložení nebo zapnutí každé plánované úlohy s AI (ve
+  formuláři i přes agenta v chatu) chce heslo k nevratným akcím a přijde mail
+  🔐, stejně jako u úloh, které mění aplikace.
+- Denní limit útraty úloh s AI (Nastavení → Web UI a agent, výchozí 1 $). Po
+  vyčerpání úlohy s AI do půlnoci neběží a přijde jeden mail.
+- Silnější heslo k nevratným akcím. Nové heslo musí mít aspoň 10 znaků a aspoň
+  2 ze 4 druhů (velká písmena, malá písmena, číslice, speciální znaky).
+  Stávající heslo platí dál.
+- Průvodce: volba Domácnost / Správce nově výslovně říká, že na rozšířené
+  zobrazení pro Správce jde po dokončení přepnout v Nastavení → Server → Režim
+  (a zpět).
+
+2.1.6 (8. 11. 2026)
+-------------------
+- Výběr modelu jen z nastavených poskytovatelů. V chatu a ve formuláři úlohy
+  se nabízí jen Claude (s API klíčem), Ollama (s vyplněnou adresou nebo
+  modelem) a modely OpenAI compatible, které jsou v Nastavení → AI model.
+- Silnější přihlašovací heslo. Nové přihlašovací heslo (průvodce, Nastavení,
+  zapomenuté heslo) musí mít kromě 20 znaků aspoň 3 ze 4 druhů: velká písmena,
+  malá písmena, číslice, speciální znaky. Vygenerované heslo je obsahuje
+  všechny. Stávající heslo platí dál.
+
+2.1.5 (8. 11. 2026)
+-------------------
+- Nápověda: limit útraty přímo u poskytovatele AI. U API klíče (Anthropic i
+  OpenAI) nápověda radí nastavit měsíční limit i v konzoli, kde se klíč
+  vytváří: kdyby klíč unikl, útratu zastaví jen tenhle limit.
+- Verze zdarma bez chatu. Bez licence (a po zkušební verzi) se chat s agentem,
+  konverzace, poznámky, výběr modelu a útrata nezobrazují (dotaz stejně
+  skončil chybou). Rychlé odpovědi bez AI jsou na Domově.
+- 7 nových rychlých odpovědí bez AI: Co se dělo v noci?, Co teď zatěžuje
+  server?, Je teplota v pořádku?, Které appky mají chyby?, Co hlásil ranní
+  report?, Co dělají úlohy?, Informace o serveru.
+- Odhlášení po 10 minutách nečinnosti (dřív 5).
+- Části Přehledu v bočním menu místo záložek nahoře, ve skupinách Server /
+  Appky a síť / Historie a správa. V Chatu je v menu dál seznam konverzací. Na
+  telefonu otevře menu i klepnutí na název části v liště.
+- Bezpečnost: dotaz z tlačítka „Zeptej se“ nebo „Proč? / Co s tím?“ (obsahuje
+  text z logů, názvy zařízení nebo maily) agent bere jako data, ne pokyny, a
+  karta potvrzení akce na to upozorní.
+- Verze zdarma bez zamčených karet: karty Home Assistant, appek, UniFi, API a
+  Útrata se nezobrazují, místo nich je v menu „Co přidá licence“.
+
+2.1.4 (6. 11. 2026)
+-------------------
+- Oprava: přepnutí modelu uprostřed konverzace (např. Haiku+ → Sonnet) končilo
+  chybou 400 „Invalid signature in thinking block“. Přemýšlení z dřívějších
+  odpovědí jiného modelu se teď do dotazu neposílá.
+
+2.1.3 (6. 11. 2026)
+-------------------
+- Baterie v kartě Home Assistant přehledněji: oddíl ukazuje jen baterie pod 30
+  % v jednom seznamu od nejslabší (místnost u názvu), tlačítko Zobrazit všech
+  po místnostech rozbalí všechny baterie po místnostech.
+
+2.1.2 (6. 11. 2026)
+-------------------
+- Světlý / tmavý vzhled: tlačítko Vzhled vlevo dole v menu a na přihlašovací
+  stránce přepíná Auto (podle systému) → Světlý → Tmavý. Volba se pamatuje v
+  prohlížeči.
+
+2.1.1 (5. 11. 2026)
+-------------------
+- Upozornění na konec roční licence: posledních 7 dní okno po přihlášení
+  (Prodloužit licenci / Připomenout zítra) a upozornění v bočním menu, Domov
+  od 30 dní předem, e-mail 14 a 3 dny předem a v den konce, věta v ranním
+  reportu. Okno upozorní i na konec zkušební verze (poslední 3 dny).
+- 7 dní tolerance po konci roční licence: placené funkce běží ještě týden s
+  upozorněním (čas na platbu a vydání klíče), pak verze zdarma.
+- Odebrat licenci: v Nastavení → Licence (s heslem k nevratným akcím) jde klíč
+  z instalace smazat, pak běží zkušební verze, pokud ještě neskončila, jinak
+  verze zdarma.
+- Zrušení chybně vydaného klíče: vydavatel může klíč zrušit, appka to pozná
+  při denním ohlášení a klíč pak nebere (zkušební verze nebo verze zdarma,
+  Nastavení → Licence řekne proč).
+- Prodloužení bez ztráty dní: nová roční licence naváže na konec té současné.
+  Tlačítko Prodloužit licenci otevře žádost s předvybranou roční licencí.
+
+2.1.0 (4. 11. 2026)
+-------------------
+- Automatizace s AI: agent hledá entity Home Assistantu šablonou filtrovanou
+  podle domény nebo názvu (dřív se celý výpis entit ořízl a světla napoprvé
+  nenašel). Čtení šablony (/api/template) už nechce potvrzení, protože nic
+  nemění; zápisy automatizací a flow potvrzení chtějí dál.
+
+2.0.9 (4. 11. 2026)
+-------------------
+- Ověřené modely OpenAI: v chatu s nástroji agenta jsou ověřené i
+  gpt-6.1-terra a gpt-6-astra (dosud jen gpt-6-luna a gpt-6.1-sol). Průvodce
+  nabízí i gpt-6.1-terra.
+
+2.0.8 (4. 11. 2026)
+-------------------
+- Nastavení za heslem: otevření Nastavení chce heslo k nevratným akcím (bez
+  něj přihlašovací heslo). Odemkne se na 10 minut od poslední akce v
+  Nastavení, odchodem z Nastavení nebo načtením stránky se zase zamkne. Kdo se
+  dostane k přihlášenému telefonu nebo počítači, Nastavení ani neuvidí.
+
+2.0.7 (4. 11. 2026)
+-------------------
+- Upgrade trvalé licence zdarma: trvalá licence koupená nejvýš 180 dní před
+  vydáním nové hlavní verze platí i pro ni, bez žádosti a platby. Trvalé
+  licence 1.x vydané od 6. 5. 2026 tak platí i pro 2.x, nové trvalé licence
+  jsou pro verze 2.x.
+- Nápověda pro 2.0: nová záložka Domov a režimy (Domácnost a Správce, Domov,
+  rychlé odpovědi a Chci…, Home Assistant po místnostech, místo a zálohy,
+  bezpečné aktualizace, měsíční vysvědčení), aktualizované texty Nastavení a
+  licence, nové snímky.
+- Návody (PDF), leták a postupy podle verze 2.0.
+
+2.0.6 (3. 11. 2026)
+-------------------
+- Přehlednější Nastavení: všechny oddíly jsou sbalené a rozbalí se kliknutím.
+  V oddílu AI model se Claude, OpenAI compatible a Ollama zapínají
+  zaškrtnutím, pole nepoužitého poskytovatele nepřekáží. Odkazy z Domova a
+  upozornění na licenci otevřou rovnou správný oddíl.
+- Domov a doporučení už nehlásí chybějící AI klíč, když je nastavené OpenAI.
+
+2.0.5 (3. 11. 2026)
+-------------------
+- OpenAI v chatu: modely OpenAI s přemýšlením (gpt-6-luna, gpt-6.1-terra…)
+  odmítaly nástroje agenta („Function tools with reasoning_effort are not
+  supported“). Appka teď dotaz zopakuje s vypnutým přemýšlením a pro model si
+  to zapamatuje. Modely, u kterých přemýšlení vypnout nejde (gpt-6.1-sol),
+  appka sama přepne na Responses API OpenAI. Ověřené jsou gpt-6-luna a
+  gpt-6.1-sol, u jiných modelů je v Nastavení poznámka s kontaktem na podporu.
+- Přemýšlení modelů OpenAI jde nastavit v Nastavení → AI model (nízké,
+  střední, vysoké) pro modely, které ho vypnout nedovolí.
+- Opravy z kontroly kódu: úloha s modelem OpenAI jde uložit jen s nastaveným
+  OpenAI, srozumitelná chyba u poškozené zálohy, OPENAI_REASONING v exportu
+  .env pro agenta v terminálu.
+
+2.0.4 (3. 11. 2026)
+-------------------
+- Záloha a obnova: Nastavení → Záloha a obnova stáhne šifrovaný soubor s celým
+  nastavením (hesla, tokeny, úlohy, poznámky, licence), volitelně i s historií
+  a konverzacemi. Chrání ho vlastní heslo zálohy. Obnova jedním souborem v
+  Nastavení nebo rovnou v průvodci na nové instalaci.
+- Průvodce prvním spuštěním nabízí v kroku AI vedle Claude i ChatGPT (OpenAI)
+  s výběrem modelu.
+- Upozornění na chybějící AI klíč zmizí i při nastaveném OpenAI.
+
+2.0.3 (3. 11. 2026)
+-------------------
+- Víc modelů OpenAI: v Nastavení → AI model jde vedle hlavního modelu zapsat
+  další modely s vlastní cenou (např. levný gpt-6-luna na ranní report,
+  gpt-6.1-sol na chat). Každý je v nabídce v chatu i v úlohách a útrata se
+  počítá jeho cenou.
+- Cena čtení z cache u OpenAI compatible, takže Útrata odpovídá skutečnosti.
+- Test OpenAI compatible ověří všechny modely a funguje i s novými modely
+  OpenAI (max_completion_tokens).
+- Srovnání modelů Claude a ChatGPT v nápovědě a návodech, rada k nákupu
+  kreditu a automatickému dobíjení.
+
+2.0.2 (3. 11. 2026)
+-------------------
+- Haiku+: nový model v nabídce = Haiku, který víc přemýšlí. Důkladnější u logů
+  a souvislostí, pořád zhruba 20× levnější než Sonnet.
+- OpenAI compatible: v Nastavení → AI model jde připojit jiného poskytovatele
+  (OpenAI, Google Gemini, Mistral, Groq, OpenRouter) nebo lokální server (LM
+  Studio, vLLM, Ollama /v1). Dá se vybrat v chatu, úlohách i pro ranní report,
+  cena se počítá podle zadaného ceníku. Claude zůstává doporučený.
+
+2.0.1 (3. 11. 2026)
+-------------------
+- Zapomenuté heslo: na přihlášení „Zapomenuté heslo?“ pošle jednorázový kód do
+  logu appky (Umbrel → Troubleshoot) a mailem. Kódem z mailu jde nastavit nové
+  přihlašovací heslo, kódem z logu i heslo k nevratným akcím.
+
+2.0.0 (2. 11. 2026)
+-------------------
+- Režim Domácnost / Správce: průvodce se zeptá „Instaluju pro rodinu / Jsem
+  profík“. Domácnost má jednoduchý pohled a agenta, který mluví bez
+  technických výrazů (čísla v závorce), Správce všechno jako dřív. Přepnout
+  jde v Nastavení → Server.
+- Domov: semafor a jedna věta o stavu serveru, co je potřeba udělat (s radou a
+  tlačítkem Zeptej se), co je v pořádku, doporučení (záloha, e-mail, přístup
+  zvenku…) a měsíční vysvědčení.
+- Rychlé odpovědi bez AI a zdarma: v prázdném chatu „Je všechno v pořádku?“,
+  „Co se dělo za týden?“, „Co zabírá místo?“, „Je záloha v pořádku?“, „Které
+  baterie vyměnit?“ a další; „Proč? / Co s tím?“ předá odpověď agentovi.
+- Chci…: ověřené postupy (fotky z telefonu, filmy doma, přístup mimo domov,
+  blokování reklam, chytrá domácnost, soubory, hesla, záloha) a řešení častých
+  problémů ve znalostní bázi; agent podle nich provede krok za krokem.
+- Home Assistant po místnostech: nefunkční zařízení (ne entity) s radou, co
+  zkusit, a baterie podle místností.
+- Zálohy a místo: hlídání složky se zálohami (NAS, disk), upozornění, když
+  záloha v Umbrelu neproběhla, velikost každé aplikace a předpověď jejího
+  růstu.
+- Bezpečné aktualizace: poznámky k verzi, „Je to bezpečné?“ a „Aktualizovat a
+  ověřit“ (s heslem k nevratným akcím; po aktualizaci ověří, že nová verze
+  běží, web odpovídá a v logu nejsou chyby).
+- Měsíční vysvědčení: 1. den v měsíci mail se shrnutím měsíce (dostupnost,
+  výpadky, disk, záloha, aktualizace) a známkou.
+- Další: podrobné logy pro agenta ukládají místo e-mailů a veřejných IP adres
+  zástupný text, kamera UniFi v režimu „jen pohyb“ už nehlásí falešné
+  „nenahrává“, výraznější nadpisy v Nastavení.
+
+1.3.3 (2. 11. 2026)
+-------------------
+- Přehlednější Nastavení: nadpis každého oddílu je světle modrý pruh přes
+  celou šířku s černým písmem, oddíly jsou tak na první pohled vidět (i v
+  tmavém režimu a na telefonu).
+- Odhad místa u podrobných logů: malé velikosti se ukazují v kB místo „0 MB“.
+
+1.3.2 (2. 11. 2026)
+-------------------
+- Podrobné logy pro agenta (s licencí): appka ukládá celé řádky logů systému a
+  všech aplikací, zkomprimované (výchozí 7 dní, max 30, Nastavení → Monitoring
+  a maily). Agent tak odpoví i na „jaké chyby byly včera v 15:40“ a ukáže
+  řádky, ne jen denní počty. Pod polem je odhad místa na disku podle tvých
+  logů (obvykle jednotky MB).
+
+1.3.1 (1. 11. 2026)
+-------------------
+- Agent zná dnešní datum a čas: k dotazu dostane aktuální datum, den v týdnu a
+  časové pásmo. Dřív u „dnes“ nebo „včera“ hádal den (třeba z data v poznámce)
+  a hledal v historii jiný den.
+- Agent ví, že Přehled ukazuje stejná data jako jeho historie: když se jeho
+  odpověď s grafem neshoduje, nejdřív zkontroluje datum a rozsah a neodpoví,
+  že grafy nevidí.
+
+1.3.0 (1. 11. 2026)
+-------------------
+- Bezpečnost UniFi: když se změní certifikát konzole, test v Nastavení ukáže
+  starý a nový otisk a nový přijme až po potvrzení heslem k nevratným akcím
+  (heslo k UniFi do té doby neodejde).
+- Bezpečnější testy v Nastavení: test s jinými než uloženými adresami,
+  příjemcem nebo názvem serveru chce heslo k nevratným akcím; záloha nastavení
+  neuchovává měněné tokeny a hesla.
+- Opravy přihlášení: po uložení Nastavení ani při delším čekání na potvrzení
+  akce už nehrozí nečekané odhlášení.
+- Texty: opravy pravopisu a překladů v aplikaci, mailech a návodech (např. „za
+  3 dny“, „1,5 roku“).
+
+1.2.9 (1. 11. 2026)
+-------------------
+- Nové ceny licencí: roční 890 Kč / 35 €, trvalá 1 990 Kč / 79 €.
+- Upgrade trvalé licence: v žádosti o licenci nová volba za 390 Kč / 15 € pro
+  majitele trvalé licence, kteří chtějí přejít na vyšší hlavní verzi, než
+  koupili.
+
+1.2.8 (31. 10. 2026)
+--------------------
+- Agent zná Přehled: na dotaz na průběh, graf nebo historii odpoví čísly a
+  odkazem, který otevře příslušný pohled Přehledu (Zdroje, Aplikace, Logy…);
+  co neumí (graf v chatu, průběžné měření), řekne rovnou.
+
+1.2.7 (31. 10. 2026)
+--------------------
+- UniFi bez blokace přihlášení: po vypršení přihlášení se appka přihlásí
+  jednou (dřív čtyřikrát naráz, konzole pak hlásila „moc pokusů“), přihlášení
+  vydrží déle; při výpadku karta ukáže poslední známý stav.
+- Ollama, požadavky na hardware: nápověda a Nastavení vysvětlují, že lokální
+  model potřebuje grafiku s vlastní pamětí a aspoň 16 GB RAM.
+
+1.2.6 (31. 10. 2026)
+--------------------
+- Ollama v appce: výchozí adresa je http://ollama_ollama_1:11434 (appka Ollama
+  na stejném Umbrelu), dřív 127.0.0.1 mířila do kontejneru appky a test
+  selhal; test v Nastavení poradí správnou adresu.
+- Ollama na pomalém stroji: odpověď se streamuje, takže dlouhé generování už
+  nespadne po 5 minutách; nápověda doporučuje menší model.
+
+1.2.5 (31. 10. 2026)
+--------------------
+- Odhlášení po nečinnosti: po 5 minutách bez aktivity se web UI samo odhlásí;
+  běžící odpověď agenta se počítá jako aktivita, automatická obnova Přehledu
+  ne.
+- Texty o uložení dat: nápověda a Nastavení jasně říkají, že hesla, tokeny a
+  konverzace zůstávají u tebe na Umbrelu.
+
+1.2.4 (31. 10. 2026)
+--------------------
+- UniFi, další umístění: v Nastavení tlačítko „+ Přidat další umístění“
+  (konzole 2 a 3), každá s vlastním testem.
+
+1.2.3 (31. 10. 2026)
+--------------------
+- Dlouhé seznamy v Přehledu: prvních 8 řádků, zbytek pod „Zobrazit všech N“;
+  Node-RED typy a moduly sbalené.
+- UniFi mimo výpadky aplikací v kartě Aplikace.
+
+1.2.2 (30. 10. 2026)
+--------------------
+- Speedtest UniFi podle linky: rychlost záložní linky se už nevydává za hlavní
+  internet; nápověda se snímkem UniFi.
+
+1.2.1 (30. 10. 2026)
+--------------------
+- UniFi: karta UniFi v Přehledu (internet a záložní linka, brána, zařízení,
+  klienti, kamery a záznam UniFi Protect), změny v ranním reportu, volitelně
+  upozornění mailem. Připojení přes lokálního uživatele jen pro čtení (View
+  Only), účet s právy zápisu appka odmítne.
+- Témata agenta a Hledání na webu chtějí při změně heslo k nevratným akcím;
+  název serveru heslo nechce.
+- Oprava: text s diakritikou se v požadavcích už nerozbije.
+
+1.2.0 (30. 10. 2026)
+--------------------
+- Časové pásmo v Nastavení → Server (ranní report, úlohy a časy v mailech);
+  průvodce ho předvyplní z prohlížeče.
+- Denní ohlášení se po aktualizaci pošle hned, takže upozornění na novou verzi
+  hned zmizí.
+
+1.1.9 (30. 10. 2026)
+--------------------
+- Zkušební verze začíná podle nejstarších dat v historii, smazáním jednoho
+  souboru ji nejde spustit znovu.
+
+1.1.8 (30. 10. 2026)
+--------------------
+- Denní ohlášení instalace (ID, verze, druh licence; jde vypnout v Nastavení →
+  Server) a upozornění vlevo dole, když je dostupná nová verze.
+
+1.1.7 (30. 10. 2026)
+--------------------
+- Zkušební verze 14 dní: po instalaci je všechno odemčené, pak verze zdarma
+  nebo licence.
+- Hledání na webu jde v Nastavení → AI model vypnout; v režimu „jen server“
+  hledá jen k tématu (dokumentace, chyby, novinky verzí).
+- Opravy z kontroly kódu: reset maže i zálohu nastavení se starými tokeny.
+
+1.1.6 (29. 10. 2026)
+--------------------
+- Témata agenta: výchozí „jen server“ (Umbrel, aplikace, chytrá domácnost),
+  nebo „bez omezení“ i s vyhledáváním na webu.
+- Licence: pod žádostí lhůta vydání (do 2 dnů od připsání platby).
+
+1.1.5 (29. 10. 2026)
+--------------------
+- Poznámky v bočním menu jako tlačítko dole, roluje jen seznam konverzací;
+  nové snímky v nápovědě.
+
+1.1.4 (29. 10. 2026)
+--------------------
+- QR platba za licenci (QR Platba v CZK, EPC QR / SEPA v EUR), přepínač měny
+  CZK / EUR.
+
+1.1.3 (29. 10. 2026)
+--------------------
+- Ceník a platba převodem v žádosti o licenci, licence roční a trvalá,
+  vysvětlení „Jak licence fungují“.
+
+1.1.2 (29. 10. 2026)
+--------------------
+- Získat licenci přehledněji vedle pole s klíčem.
+
+1.1.1 (29. 10. 2026)
+--------------------
+- Žádost o licenci formulářem přímo z Nastavení → Licence.
+
+1.1.0 (28. 10. 2026)
+--------------------
+- Licence: monitoring, maily, ranní report a Přehled zdarma; chat s agentem,
+  AI úlohy, předpovědi, karty aplikací a delší historie s licencí. Licenční
+  klíč vázaný na ID instalace, zadává se v Nastavení → Licence.
+
+1.0.9 (28. 10. 2026)
+--------------------
+- Číslo verze na přihlašovací stránce a v bočním menu.
+
+1.0.8 (28. 10. 2026)
+--------------------
+- Maskování tokenů a hesel ve výsledcích nástrojů agenta a v uložených řádcích
+  logů.
+
+1.0.7 (28. 10. 2026)
+--------------------
+- Agent zná hardware serveru (model, CPU, RAM, úložiště) a nedomýšlí si ho.
+
+1.0.6 (28. 10. 2026)
+--------------------
+- Opravy z kontroly kódu: po uložení nastavení v appce žádné chybné
+  přesměrování na HTTPS, odolnější automatický restart, průvodce spolehlivěji
+  pozná Node-RED.
+
+1.0.5 (27. 10. 2026)
+--------------------
+- Opravy textů v UI, nápovědě a návodu.
+
+1.0.4 (27. 10. 2026)
+--------------------
+- Poznámky v bočním menu sbalené.
+
+1.0.3 (27. 10. 2026)
+--------------------
+- API historie přes HTTPS na portu 8765 pro agenta v terminálu na počítači.
+
+1.0.2 (27. 10. 2026)
+--------------------
+- Chat vidí historii monitoringu hned po průvodci (token API se vytvoří sám).
+
+1.0.1 (27. 10. 2026)
+--------------------
+- Průvodce ukazuje celý příkaz pro zjištění kódu; dlouhé akce v Přehledu se
+  zalamují.
+
+1.0.0 (27. 10. 2026)
+--------------------
+- První vydání jako Umbrel appka v obchodě Intellihome: monitoring každých 15
+  minut bez AI, upozornění mailem, ranní report s předpověďmi, Přehled s
+  grafy, chat s AI agentem (nevratné akce s dvojím potvrzením a heslem),
+  plánované úlohy, automatický restart, ⚙︎ Nastavení a průvodce prvním
+  spuštěním, čeština i angličtina, nápověda.

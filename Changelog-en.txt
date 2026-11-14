@@ -1,0 +1,608 @@
+IamHome Agent: version history
+==============================
+What each version brought, newest first. Requires umbrelOS 2.0 or newer.
+(Generated from CHANGELOG.md with node tools/changelog-txt.mjs.)
+
+2.3.0 (13 Nov 2026)
+-------------------
+- Knowledgebase tab at the top next to Overview: the whole knowledge base for
+  reading, also in the free version. I want… guides, When something doesn't
+  work, articles on the apps you have installed and 25 articles from the
+  Intellihome wiki (Home Assistant, Node-RED, Homebridge, Docker, MQTT,
+  Zigbee, Thread, Matter, UniFi…, the same as intellihome.cz/znalosti), with
+  search, in Czech and English. With a licence Walk me through it with the
+  agent / Ask the agent. The agent knows the wiki too and links to articles in
+  its answers.
+- How to: problems on Home, morning report findings (in the e-mail and in
+  Overview → Reports) and recommendations link to the matching Knowledgebase
+  article (full disk, hot server, app not running, backups, log errors, Home
+  Assistant).
+
+2.2.9 (13 Nov 2026)
+-------------------
+- Security library updates: hono 4.13.18 and @hono/node-server 2.1.8 (pulled
+  in by the MCP SDK), fixing vulnerabilities reported on 13 Nov.
+
+2.2.8 (13 Nov 2026)
+-------------------
+- Known errors. Next to a log error (Overview → Logs, app card, Home
+  Assistant) there is a mark as known button, optionally with a "valid until"
+  date (irreversible-action password). Such an error, e.g. a switched-off
+  heater that Node-RED keeps looking for, stops counting towards the morning
+  report and error increases. It stays watched: if there are 10× more of it
+  than usual, the report flags it. New errors are still reported. List and
+  removal at the bottom of Overview → Logs. The chat agent treats them as
+  known and doesn't present them as a problem.
+- "I know" also for Home Assistant devices and apps. A device that is down on
+  purpose (heating in summer), once marked on the Home Assistant card, doesn't
+  count as not working, on Home or in the report; once it works again, the
+  report mentions it once. An app you only start occasionally can be marked
+  right in Overview → Apps (previously only in Settings); its stopping is then
+  not reported.
+- The end of an "I know" period is announced by the morning report 3 days
+  before and the day after.
+- Suggestions: an error that repeats for 14 days in a similar number while the
+  app isn't crashing is offered by the app ("Do you know about it?") on Home,
+  in Overview → Logs and once in the morning report. Likewise a Home Assistant
+  device that has been down for over a week.
+- The chat agent can save "I know" itself when you tell it ("treat these
+  errors as known until March"); you confirm with the password.
+- Ignored errors (Settings → Monitoring) are shown in Overview → Logs with
+  what they hid in 7 days, and one button converts them to known errors that
+  are watched for an increase.
+
+2.2.7 (13 Nov 2026)
+-------------------
+- Up-to-date backup monitoring. The backup folder is checked at every check
+  (every 15 minutes) instead of once every 6 hours, so the agent and Home
+  could show a backup several hours old (with the hourly incremental umbrelOS
+  backup the agent said "last one at 10:17" at 3 pm). Large folders (the
+  umbrelOS backup repository has thousands of files) are walked starting with
+  the most recently changed subfolders, so the newest backup is found in them
+  too. Home and the instant answer say when the folder was checked.
+- The agent gives the check time for monitoring data ("as of the check at
+  14:30") and does not present it as the current state. When the data is old
+  it verifies it live (for backups it walks the folder itself).
+
+2.2.6 (12 Nov 2026)
+-------------------
+- App restarts and updates. Restarts, starts, stops and updates of apps are
+  read from the Umbrel log (even when they took only a few seconds, which the
+  15-minute check cannot see), together with who did them: an IamHome task,
+  the agent in chat, manually in Umbrel or an automatic update. They are on
+  the app card, the ones outside IamHome also in Outages and in "What happened
+  overnight?". "No outage since" starts at the last restart. After the update
+  they are also filled in from the stored logs of the last 7 days.
+- The agent answers "did the app restart…?" from these events (it used to say
+  "no" when an IamHome task restarted the app between two checks). Before
+  answering "it didn't happen / I found nothing" it says what it checked. When
+  it reads an app's log it gets the app's known messages from the knowledge
+  base (so far Homebridge: the avahi messages "Server startup complete …
+  umbrel-N.local" are not restarts).
+- New instant answer "Did the scheduled tasks run?" (no AI, free): for every
+  enabled task, its runs due in the last 24 hours and whether they ran, failed
+  or did not run at all (for a missed run also that IamHome was not running at
+  that time).
+
+2.2.5 (10 Nov 2026)
+-------------------
+- Home → Apps: the running status is on a line below the app name, long names
+  no longer wrap.
+
+2.2.4 (9 Nov 2026)
+------------------
+- Server restart without false alarms. For the first 15 minutes after the
+  server starts, apps that are still starting up are not reported as down
+  (previously every restart sent "⚠️ problem" and a quarter of an hour later
+  "✅ recovered"). The Overview shows them as "starting after the server
+  start", Home shows a notice. If an app isn't up after 15 minutes, you get an
+  alert.
+- Home Assistant after a restart. After a restart HA sets the last change of
+  every entity to the start time, so devices down for months looked like a new
+  fault. The app now remembers since when a device has been down; for a device
+  it first sees after an HA restart it says "HA start, maybe longer".
+- Morning report: a camera in "motion only" mode is no longer reported as "not
+  recording". A crashed app and its web count as one thing (previously two
+  crashed apps looked like a "simultaneous outage of 4 services").
+- Verification after an update and after a task action checks that the app's
+  container really runs (Umbrel reports "ready" even for a crashed container).
+- The monthly report card tells apart when the server was down (from a
+  detected restart) and when only monitoring was (app update, Umbrel MCP
+  outage). Backup days are counted in local time.
+- Overview charts break the line where there is no data (the server or
+  monitoring wasn't running). Quick answers warn when the last measurement is
+  old and say when the internet speed test ran. The memory leak forecast
+  starts only after the app's or server's last restart.
+
+2.2.3 (9 Nov 2026)
+------------------
+- Crashed container. Umbrel shows an app as running even when its container
+  has crashed. The app now detects it (the app uses no memory) and reports it
+  as a "container down" outage: e-mail, Home, morning report and automatic
+  restart.
+- Server restart. A umbrelOS restart is recorded in Outages, in the quick
+  answers (night, week) and in the morning report. Apps now show "no outage
+  for X", at most since the server started, instead of a misleading "running ·
+  20 days".
+- Server uptime in the Overview is counted from its start (was the value from
+  the last check), under an hour in minutes.
+
+2.2.2 (9 Nov 2026)
+------------------
+- Forgotten irreversible-action password. Every field asking for this password
+  (unlocking Settings, confirming an action, tasks, updates) has a "Forgot
+  password?" link. A second click logs you out and opens password recovery
+  with the irreversible-action password change preselected (code from the app
+  log).
+- Clearer morning report. The e-mail has a coloured header by status, disk /
+  RAM / CPU / temperature tiles with a bar, findings as coloured cards, the AI
+  analysis with headings and bullets and the server status as a table. The
+  plain-text version stays.
+
+2.2.1 (8 Nov 2026)
+------------------
+- Stricter lockout against guessing. After 10 failed attempts from one address
+  within an hour (login password, API token, wizard code, pairing, forgotten
+  password) the address is blocked for an hour (was 20 attempts and 10
+  minutes).
+- Same for the irreversible-action and backup passwords: after 10 wrong action
+  passwords, or 5 wrong backup passwords, within an hour a one-hour block (was
+  10 minutes).
+
+2.2.0 (8 Nov 2026)
+------------------
+- Secrets are not stored in history either. Tokens and passwords from the
+  settings and recognisable keys (Claude, OpenAI, GitHub, HA tokens) are
+  masked in saved conversations (including the title), the action history,
+  notes and e-mail previews. This also applies to a token you paste into a
+  message to the agent.
+
+2.1.9 (8 Nov 2026)
+------------------
+- HTTPS keys encrypted. The private keys of the app's own certificate
+  authority and server (data/tls) are encrypted with the same key. On another
+  device the app creates a new certificate authority.
+- Secret settings encrypted. Tokens and passwords of other services (MCP, AI
+  key, e-mail, Home Assistant, Node-RED, UniFi…) are encrypted in config.json
+  with a key from Umbrel (APP_SEED), so nobody with access only to the data
+  folder (e.g. another AI agent via Umbrel MCP) can read them. Backups still
+  carry them and restoring works on another device too.
+- App passwords are no longer stored readably. The login password and the
+  irreversible-action password are kept in the settings (config.json) only as
+  a hash (scrypt). On the first start of the new version they are converted
+  automatically; devices are logged out once.
+- Stronger backup password. A new backup needs a password of at least 12
+  characters and 3 of 4 types (uppercase, lowercase, digits, special
+  characters); the field has a generate button and a reminder to save the
+  password. Older backups can still be restored.
+
+2.1.8 (8 Nov 2026)
+------------------
+- One MCP token in Settings. The field is now just “Umbrel MCP token”
+  (monitoring and chat). A separate chat token is optional and hidden under “+
+  Separate token for chat (optional)”, because Umbrel currently gives all
+  tokens the same permissions. If it is already filled in, it stays visible.
+
+2.1.7 (8 Nov 2026)
+------------------
+- Wizard: Home / Admin choice now says explicitly that you can switch to the
+  extended Admin view after finishing, in Settings → Server → Mode (and back).
+- Stronger irreversible-action password. A new password must have at least 10
+  characters and at least 2 of 4 types (uppercase, lowercase, digits, special
+  characters). The current password keeps working.
+- AI tasks need the password. Saving or enabling any scheduled AI task (in the
+  form or via the chat agent) needs the irreversible-action password and sends
+  a 🔐 e-mail, like tasks that change apps.
+- Daily spend limit for AI tasks (Settings → Web UI and agent, default $1).
+  Once used up, AI tasks don't run until midnight and one e-mail is sent.
+
+2.1.6 (8 Nov 2026)
+------------------
+- Stronger login password. A new login password (wizard, Settings, forgotten
+  password) must have, besides 20 characters, at least 3 of 4 types:
+  uppercase, lowercase, digits, special characters. The generated password
+  contains all of them. The current password keeps working.
+- Model picker shows only configured providers. Chat and the task form offer
+  only Claude (with an API key), Ollama (with an address or model filled in)
+  and the OpenAI compatible models set in Settings → AI model.
+
+2.1.5 (8 Nov 2026)
+------------------
+- Help: spend limit directly with the AI provider. For the API key (Anthropic
+  and OpenAI) the help recommends also setting a monthly limit in the console
+  where the key is created: if the key leaks, only this limit stops the
+  spending.
+- Free version without chat. Without a licence (and after the trial) the agent
+  chat, conversations, notes, model picker and spend are hidden (a question
+  ended with an error anyway). Quick answers without AI are on Home.
+- 7 new quick answers without AI: What happened last night?, What is loading
+  the server now?, Is the temperature OK?, Which apps have errors?, What did
+  the morning report say?, What are the tasks doing?, About the server.
+- Logout after 10 minutes of inactivity (was 5).
+- Overview sections in the side menu instead of tabs at the top, grouped into
+  Server / Apps & network / History & admin. In Chat the menu still shows
+  conversations. On a phone, tapping the section name in the top bar also
+  opens the menu.
+- Security: a question from an “Ask” or “Why? / What to do?” button
+  (containing log text, device names or e-mails) is treated by the agent as
+  data, not instructions, and the action confirmation card warns about it.
+- Free version without locked tabs: the Home Assistant, app, UniFi, API and
+  Spending tabs are hidden; the menu has “What a licence adds” instead.
+
+2.1.4 (6 Nov 2026)
+------------------
+- Fix: switching the model mid-conversation (e.g. Haiku+ → Sonnet) failed with
+  error 400 "Invalid signature in thinking block". Thinking from earlier
+  answers of another model is no longer sent.
+
+2.1.3 (6 Nov 2026)
+------------------
+- Clearer batteries in the Home Assistant tab: the section shows only
+  batteries below 30 % in one list, weakest first (room next to the name); the
+  Show all by room button expands all batteries by room.
+
+2.1.2 (6 Nov 2026)
+------------------
+- Light / dark theme: the Theme button at the bottom left of the menu and on
+  the login page cycles Auto (system setting) → Light → Dark. The choice is
+  remembered by the browser.
+
+2.1.1 (5 Nov 2026)
+------------------
+- Annual licence ending notice: in the last 7 days a window after login (Renew
+  licence / Remind me tomorrow) and a notice in the side menu, Home from 30
+  days ahead, e-mail 14 and 3 days before and on the last day, a line in the
+  morning report. The window also warns before the trial ends (last 3 days).
+- 7-day grace period after an annual licence ends: paid features keep running
+  for another week with a notice (time for the payment and the key), then the
+  free version runs.
+- Remove licence: in Settings → Licence (with the password for irreversible
+  actions) the key can be deleted from the installation; the trial then runs
+  if it has not ended yet, otherwise the free version.
+- Revoking a wrongly issued key: the issuer can revoke a key; the app learns
+  it from the daily check-in and stops accepting it (trial or free version,
+  Settings → Licence says why).
+- Renewal without losing days: a new annual licence continues from the end of
+  the current one. The Renew licence button opens the request with the annual
+  licence preselected.
+
+2.1.0 (4 Nov 2026)
+------------------
+- AI automations: the agent looks up Home Assistant entities with a template
+  filtered by domain or name (the full entity list used to be cut off, so
+  lights were not found on the first try). Reading a template (/api/template)
+  no longer asks for confirmation, because it changes nothing; writing
+  automations and flows still does.
+
+2.0.9 (4 Nov 2026)
+------------------
+- Verified OpenAI models: gpt-6.1-terra and gpt-6-astra are now verified in
+  chat with agent tools too (so far only gpt-6-luna and gpt-6.1-sol). The
+  setup wizard also offers gpt-6.1-terra.
+
+2.0.8 (4 Nov 2026)
+------------------
+- Password-protected Settings: opening Settings asks for the
+  irreversible-action password (without one, the login password). They unlock
+  for 10 minutes from the last action in Settings and lock again when you
+  leave Settings or reload the page. Someone with your logged-in phone or
+  computer cannot even see them.
+
+2.0.7 (4 Nov 2026)
+------------------
+- Free lifetime licence upgrade: a lifetime licence bought no more than 180
+  days before a new major version is released is valid for it too, with no
+  request or payment. Lifetime 1.x licences issued from 6 May 2026 are
+  therefore valid for 2.x; new lifetime licences cover 2.x.
+- Help for 2.0: a new Home & modes tab (Home and Admin modes, Home, instant
+  answers and I want…, Home Assistant by room, space and backups, safe
+  updates, monthly report card), updated Settings and licence texts, new
+  screenshots.
+- Manuals (PDF), leaflet and guides updated for version 2.0.
+
+2.0.6 (3 Nov 2026)
+------------------
+- Tidier Settings: all sections are collapsed and open with a click. In the AI
+  model section Claude, OpenAI compatible and Ollama are turned on with a
+  checkbox, so fields of unused providers stay out of the way. Links from Home
+  and the licence notice open the right section directly.
+- Home and recommendations no longer report a missing AI key when OpenAI is
+  set up.
+
+2.0.5 (3 Nov 2026)
+------------------
+- OpenAI in chat: OpenAI reasoning models (gpt-6-luna, gpt-6.1-terra…)
+  rejected the agent's tools ("Function tools with reasoning_effort are not
+  supported"). The app now retries with reasoning turned off and remembers it
+  for the model. Models where reasoning cannot be turned off (gpt-6.1-sol)
+  automatically switch to the OpenAI Responses API. Verified: gpt-6-luna and
+  gpt-6.1-sol; Settings notes to contact support for other models.
+- OpenAI model reasoning can be set in Settings → AI model (low, medium, high)
+  for models that cannot turn it off.
+- Fixes from a code review: a task with an OpenAI model can only be saved with
+  OpenAI set up, a clear error for a damaged backup, OPENAI_REASONING in the
+  .env export for the terminal agent.
+
+2.0.4 (3 Nov 2026)
+------------------
+- Backup and restore: Settings → Backup and restore downloads an encrypted
+  file with all settings (passwords, tokens, tasks, notes, licence),
+  optionally with history and conversations. It is protected by its own backup
+  password. Restore from one file in Settings or right in the wizard on a new
+  installation.
+- The first-run wizard offers ChatGPT (OpenAI) next to Claude in the AI step,
+  with a model choice.
+- The missing AI key warning also disappears when OpenAI is set up.
+
+2.0.3 (3 Nov 2026)
+------------------
+- More OpenAI models: Settings → AI model can list more models next to the
+  main one, each with its own price (e.g. a cheap gpt-6-luna for the morning
+  report, gpt-6.1-sol for chat). Each appears in the model list in chat and
+  tasks and its spending uses its own price.
+- Cache read price for OpenAI compatible, so Spending matches reality.
+- The OpenAI compatible test checks all models and works with new OpenAI
+  models (max_completion_tokens).
+- Claude vs ChatGPT model comparison in Help and the guides, advice on buying
+  credit and auto-reload.
+
+2.0.2 (3 Nov 2026)
+------------------
+- Haiku+: a new model in the list = Haiku that thinks more. More thorough with
+  logs and connections, still about 20× cheaper than Sonnet.
+- OpenAI compatible: Settings → AI model can connect another provider (OpenAI,
+  Google Gemini, Mistral, Groq, OpenRouter) or a local server (LM Studio,
+  vLLM, Ollama /v1). It can be picked in chat, tasks and for the morning
+  report; the cost follows the price list you enter. Claude stays recommended.
+
+2.0.1 (3 Nov 2026)
+------------------
+- Forgot password: "Forgot password?" on the login page sends a one-time code
+  to the app log (Umbrel → Troubleshoot) and by e-mail. The e-mail code sets a
+  new login password, the log code can also set the irreversible-action
+  password.
+
+2.0.0 (2 Nov 2026)
+------------------
+- Home / Admin mode: the wizard asks "I'm installing for my family / I'm a
+  pro". Home has a simple view and an agent that talks without technical terms
+  (numbers in brackets), Admin has everything as before. Switch in Settings →
+  Server.
+- Home view: a traffic light and one sentence about the server, what needs
+  doing (with advice and an Ask button), what's fine, recommendations (backup,
+  e-mail, remote access…) and the monthly report card.
+- Instant answers, no AI, free: in an empty chat "Is everything OK?", "What
+  happened this week?", "What takes up space?", "Is the backup OK?", "Which
+  batteries need replacing?" and more; "Why? / What to do?" hands the answer
+  to the agent.
+- I want…: tested guides (phone photos, movies at home, remote access, ad
+  blocking, smart home, files, passwords, backup) and fixes for common
+  problems in a knowledge base; the agent guides you step by step.
+- Home Assistant by room: devices that aren't working (not entities) with
+  advice on what to try, and batteries by room.
+- Backups and space: watching the backup folder (NAS, drive), a notice when
+  the Umbrel backup didn't run, the size of each app and a forecast of its
+  growth.
+- Safe updates: release notes, "Is it safe?" and "Update and verify" (with the
+  irreversible-action password; afterwards it checks that the new version
+  runs, the web responds and the log has no errors).
+- Monthly report card: on the 1st of each month an e-mail summing up the month
+  (availability, outages, disk, backup, updates) with a grade.
+- Also: detailed logs for the agent store placeholders instead of e-mails and
+  public IP addresses, a UniFi camera in motion-only mode no longer reports a
+  false "not recording", clearer headings in Settings.
+
+1.3.3 (2 Nov 2026)
+------------------
+- Clearer Settings: each section heading is a light blue full-width bar with
+  black text, so sections stand out at a glance (also in dark mode and on
+  phones).
+- Disk estimate for detailed logs: small sizes are shown in kB instead of "0
+  MB".
+
+1.3.2 (2 Nov 2026)
+------------------
+- Detailed logs for the agent (with a licence): the app keeps full log lines
+  of the system and all apps, compressed (default 7 days, max 30, Settings →
+  Monitoring & e-mail). The agent can then answer “what errors were there
+  yesterday at 15:40” and show the lines, not just daily counts. Under the
+  field is a disk space estimate based on your logs (usually a few MB).
+
+1.3.1 (1 Nov 2026)
+------------------
+- The agent knows today's date and time: each question comes with the current
+  date, weekday and time zone. Before, it guessed the day for "today" or
+  "yesterday" (e.g. from a date in a note) and looked up the wrong day in the
+  history.
+- The agent knows the Overview shows the same data as its history: when its
+  answer does not match a chart, it checks the date and range first instead of
+  saying it cannot see the charts.
+
+1.3.0 (1 Nov 2026)
+------------------
+- UniFi security: when the console certificate changes, the Settings test
+  shows the old and new fingerprints and accepts the new one only after you
+  confirm it with the irreversible-action password (the UniFi password is not
+  sent until then).
+- Safer Settings tests: a test with addresses, recipient or server name other
+  than the saved ones requires the irreversible-action password; the settings
+  backup no longer keeps tokens and passwords that are being changed.
+- Login fixes: no more unexpected logouts after saving Settings or while
+  waiting a long time to confirm an action.
+- Texts: spelling and translation fixes in the app, e-mails and guides.
+
+1.2.9 (1 Nov 2026)
+------------------
+- New licence prices: annual 890 CZK / 35 €, lifetime 1,990 CZK / 79 €.
+- Lifetime licence upgrade: a new option in the licence request for 390 CZK /
+  15 €, for lifetime licence owners who want to move to a higher major version
+  than the one purchased.
+
+1.2.8 (31 Oct 2026)
+-------------------
+- The agent knows the dashboard: asked about a trend, chart or history, it
+  answers with numbers and a link that opens the matching dashboard view
+  (Resources, Apps, Logs…); it says right away what it cannot do (charts in
+  the chat, continuous measuring).
+
+1.2.7 (31 Oct 2026)
+-------------------
+- UniFi without login lockouts: when the login expires the app logs in once
+  (before four times at once, so the console reported "too many attempts"),
+  and the login lasts longer; when the console is unreachable the card shows
+  the last known state.
+- Ollama hardware requirements: help and Settings explain that a local model
+  needs a graphics card with its own memory and at least 16 GB RAM.
+
+1.2.6 (31 Oct 2026)
+-------------------
+- Ollama in the app: the default address is http://ollama_ollama_1:11434 (the
+  Ollama app on the same Umbrel); before, 127.0.0.1 pointed at the app
+  container and the test failed; the Settings test suggests the right address.
+- Ollama on a slow machine: the answer is streamed, so long generation no
+  longer fails after 5 minutes; help recommends a smaller model.
+
+1.2.5 (31 Oct 2026)
+-------------------
+- Logout after inactivity: the web UI logs out by itself after 5 minutes
+  without activity; a running agent answer counts as activity, automatic
+  dashboard refresh does not.
+- Where data is stored: help and Settings now clearly say that passwords,
+  tokens and conversations stay on your Umbrel.
+
+1.2.4 (31 Oct 2026)
+-------------------
+- UniFi, more locations: a "+ Add another location" button in Settings
+  (consoles 2 and 3), each with its own test.
+
+1.2.3 (31 Oct 2026)
+-------------------
+- Long lists in the dashboard: the first 8 rows, the rest under "Show all N";
+  Node-RED node types and modules collapsed.
+- UniFi kept out of app outages in the Apps card.
+
+1.2.2 (30 Oct 2026)
+-------------------
+- UniFi speed test per line: the backup line speed is no longer shown as the
+  main internet speed; help with a UniFi screenshot.
+
+1.2.1 (30 Oct 2026)
+-------------------
+- UniFi: a UniFi card in the dashboard (internet and backup line, gateway,
+  devices, clients, UniFi Protect cameras and recording), changes in the
+  morning report, optional e-mail alerts. Connects with a local read-only
+  (View Only) user; an account with write rights is refused.
+- Agent topics and Web search now require the irreversible-action password to
+  change; the server name does not.
+- Fix: text with diacritics no longer breaks in requests.
+
+1.2.0 (30 Oct 2026)
+-------------------
+- Time zone in Settings → Server (morning report, tasks and times in e-mails);
+  the wizard pre-fills it from the browser.
+- Daily check-in is sent right after an update, so the new-version notice
+  disappears immediately.
+
+1.1.9 (30 Oct 2026)
+-------------------
+- Trial starts from the oldest data in the history; deleting a single file no
+  longer restarts it.
+
+1.1.8 (30 Oct 2026)
+-------------------
+- Daily installation check-in (ID, version, licence type; can be turned off in
+  Settings → Server) and a notice at the bottom left when a new version is
+  available.
+
+1.1.7 (30 Oct 2026)
+-------------------
+- 14-day trial: everything is unlocked after installation, then the free
+  version or a licence.
+- Web search can be turned off in Settings → AI model; in "server only" mode
+  it searches only on topic (documentation, errors, release news).
+- Code review fixes: reset also deletes the settings backup with old tokens.
+
+1.1.6 (29 Oct 2026)
+-------------------
+- Agent topics: the default "server only" (Umbrel, apps, smart home), or
+  "unrestricted" including web search.
+- Licence: the issuing period under the request (within 2 days of the payment
+  arriving).
+
+1.1.5 (29 Oct 2026)
+-------------------
+- Notes in the side menu as a button at the bottom, only the conversation list
+  scrolls; new help screenshots.
+
+1.1.4 (29 Oct 2026)
+-------------------
+- QR payment for a licence (Czech QR Platba in CZK, EPC QR / SEPA in EUR), CZK
+  / EUR currency switch.
+
+1.1.3 (29 Oct 2026)
+-------------------
+- Price list and bank transfer in the licence request, yearly and perpetual
+  licences, a "How licences work" explanation.
+
+1.1.2 (29 Oct 2026)
+-------------------
+- Get a licence placed more clearly next to the key field.
+
+1.1.1 (29 Oct 2026)
+-------------------
+- Licence request form right in Settings → Licence.
+
+1.1.0 (28 Oct 2026)
+-------------------
+- Licence: monitoring, e-mails, the morning report and the dashboard are free;
+  chat with the agent, AI tasks, forecasts, app cards and longer history need
+  a licence. The licence key is bound to the installation ID and entered in
+  Settings → Licence.
+
+1.0.9 (28 Oct 2026)
+-------------------
+- Version number on the login page and in the side menu.
+
+1.0.8 (28 Oct 2026)
+-------------------
+- Masking of tokens and passwords in agent tool results and stored log lines.
+
+1.0.7 (28 Oct 2026)
+-------------------
+- The agent knows the server hardware (model, CPU, RAM, storage) and doesn't
+  guess it.
+
+1.0.6 (28 Oct 2026)
+-------------------
+- Code review fixes: no wrong HTTPS redirect after saving settings in the app,
+  sturdier auto-restart, the wizard detects Node-RED more reliably.
+
+1.0.5 (27 Oct 2026)
+-------------------
+- Text fixes in the UI, help and guide.
+
+1.0.4 (27 Oct 2026)
+-------------------
+- Notes in the side menu collapsed.
+
+1.0.3 (27 Oct 2026)
+-------------------
+- History API over HTTPS on port 8765 for the terminal agent on a computer.
+
+1.0.2 (27 Oct 2026)
+-------------------
+- Chat sees the monitoring history right after the wizard (the API token is
+  created automatically).
+
+1.0.1 (27 Oct 2026)
+-------------------
+- The wizard shows the full command to get the setup code; long actions in the
+  dashboard wrap.
+
+1.0.0 (27 Oct 2026)
+-------------------
+- First release as an Umbrel app in the Intellihome store: monitoring every 15
+  minutes without AI, e-mail alerts, a morning report with forecasts, a
+  dashboard with charts, chat with an AI agent (irreversible actions with
+  double confirmation and a password), scheduled tasks, auto-restart, ⚙︎
+  Settings and a first-run wizard, Czech and English, help.

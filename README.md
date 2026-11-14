@@ -14,6 +14,8 @@ Runs on Umbrel Home and on Raspberry Pi 5 (amd64 and arm64). **Requires umbrelOS
 
 After installation the app guides you through the first setup. Updates appear in umbrelOS like for any other app.
 
+What each version brought: [version history](Changelog-en.txt).
+
 ## Licence
 IamHome Agent is proprietary software (all rights reserved). Basic monitoring is free, all features are unlocked for 14 days after installation, then they require a licence (available in the app: Settings → Licence).
 
@@ -34,6 +36,8 @@ Běží na Umbrel Home i na Raspberry Pi 5 (amd64 i arm64). **Vyžaduje umbrelOS
 4. Otevři obchod **Intellihome** a nainstaluj **IamHome Agent**.
 
 Po instalaci tě aplikace provede prvním nastavením. Aktualizace se v umbrelOS ukazují jako u ostatních aplikací.
+
+Co přinesla každá verze: [historie verzí](Changelog.txt).
 
 ## Licence
 IamHome Agent je proprietární software (všechna práva vyhrazena). Základní monitoring je zdarma, všechny funkce jsou 14 dní po instalaci odemčené, pak vyžadují licenci (v aplikaci: Nastavení → Licence).
