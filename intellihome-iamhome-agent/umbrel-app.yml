@@ -11,6 +11,10 @@ description: >-
   e-mail alerts, a morning report, forecasts (disk, memory, crashes, temperature) and a dashboard.
 
 
+  Requires umbrelOS 2.0 or newer (the app reads the server state through the Umbrel MCP server,
+  which older versions do not have).
+
+
   First start: open the app and enter the one-time setup code from the app logs
   (Settings → Troubleshoot → this app).
 developer: Intellihome
