@@ -3,6 +3,11 @@ IamHome Agent: historie verzí
 Co přinesla každá verze, od nejnovější. Vyžaduje umbrelOS 2.0 nebo novější.
 (Vygenerováno z CHANGELOG.md příkazem node tools/changelog-txt.mjs.)
 
+2.3.1 (20. 11. 2026)
+--------------------
+- Přepnutí jazyka CZ / EN tě nechá na stejném místě (Přehled a jeho část,
+  Nastavení, Nápověda, Znalosti, otevřená konverzace), dřív skočilo na Domov.
+
 2.3.0 (13. 11. 2026)
 --------------------
 - Tab Znalosti nahoře vedle Přehledu: celá znalostní báze ke čtení, i ve verzi

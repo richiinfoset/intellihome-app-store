@@ -3,6 +3,12 @@ IamHome Agent: version history
 What each version brought, newest first. Requires umbrelOS 2.0 or newer.
 (Generated from CHANGELOG.md with node tools/changelog-txt.mjs.)
 
+2.3.1 (20 Nov 2026)
+-------------------
+- Switching the language CZ / EN keeps you where you were (Overview and its
+  section, Settings, Help, Knowledgebase, the open conversation); it used to
+  jump to Home.
+
 2.3.0 (13 Nov 2026)
 -------------------
 - Knowledgebase tab at the top next to Overview: the whole knowledge base for
