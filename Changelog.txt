@@ -3,6 +3,23 @@ IamHome Agent: historie verzí
 Co přinesla každá verze, od nejnovější. Vyžaduje umbrelOS 2.0 nebo novější.
 (Vygenerováno z CHANGELOG.md příkazem node tools/changelog-txt.mjs.)
 
+2.3.2 (21. 11. 2026)
+--------------------
+- Hledání na webu s potvrzením po čtení dat: když agent v dotazu už četl data
+  ze serveru (logy, stav appek…) nebo je dostal v dotazu, hledání nejdřív
+  potvrdíš a vidíš přesný dotaz. Hledá se samostatně, vyhledávač dostane jen
+  ten dotaz. Podstrčený pokyn v logu tak nemůže data vynést přes vyhledávač.
+- Pomalý regulární výraz při hledání v podrobných logech už nezablokuje appku:
+  hledání skončí po 3 s s chybou.
+- Zapomenuté heslo: další žádost, dokud kód ještě platí, nový kód nevytvoří
+  (cizí žádost ti rozpracovanou obnovu nezruší) a mail znovu nepošle; limit
+  žádostí i podle adresy.
+- Párování počítače ověřuje certifikát delším otiskem (128 bitů), zálohy .env
+  u agenta v terminálu jen pro vlastníka.
+- Opravy z kontroly kódu: chyba v jednom požadavku web UI nebo API už nemůže
+  shodit celý monitoring (odpoví chybou 500), operace s aplikacemi z logu
+  Umbrelu mají o silvestrovské půlnoci správný rok.
+
 2.3.1 (20. 11. 2026)
 --------------------
 - Přepnutí jazyka CZ / EN tě nechá na stejném místě (Přehled a jeho část,

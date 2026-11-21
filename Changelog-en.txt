@@ -3,6 +3,25 @@ IamHome Agent: version history
 What each version brought, newest first. Requires umbrelOS 2.0 or newer.
 (Generated from CHANGELOG.md with node tools/changelog-txt.mjs.)
 
+2.3.2 (21 Nov 2026)
+-------------------
+- Web search with confirmation after reading data: if the agent has already
+  read server data in the question (logs, app state…) or got it in the
+  question, you confirm the search first and see the exact query. The search
+  runs separately and the search engine gets only that query, so an
+  instruction planted in a log cannot leak data through it.
+- A slow regular expression when searching detailed logs no longer blocks the
+  app: the search stops after 3 s with an error.
+- Forgot password: another request while a code is still valid creates no new
+  code (someone else's request cannot cancel your recovery) and does not
+  resend the e-mail; requests are also limited per address.
+- Pairing a computer verifies the certificate with a longer fingerprint (128
+  bits); .env backups of the terminal agent are owner-only.
+- Fixes from a code review: an error in a single web UI or API request can no
+  longer take down the whole monitoring (it returns an error 500), app
+  operations from the Umbrel log get the right year around New Year's
+  midnight.
+
 2.3.1 (20 Nov 2026)
 -------------------
 - Switching the language CZ / EN keeps you where you were (Overview and its
